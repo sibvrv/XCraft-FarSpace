@@ -1,0 +1,34 @@
+{
+  "name": "xcraft-far-space",
+  "version": "1.0.0",
+  "main": "app.ts",
+  "author": {
+    "email": "info@sibvrv.com",
+    "name": "Vereshchagin Roman",
+    "url": "https://www.sibvrv.com/"
+  },
+  "repository": {
+    "url": "https://github.com/sibvrv/XCraft-FarSpace"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack-cli --env.build=dev --mode development",
+    "build:prod": "webpack-cli --mode=production",
+    "lint": "tslint -p ."
+  },
+  "dependencies": {
+    "three": "^0.116.1",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^4.5.0",
+    "tsconfig-paths-webpack-plugin": "^3.3.0",
+    "tslint": "^6.1.3",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
