@@ -27,6 +27,9 @@ import {MainMoon} from '@Content/Entities/Planets/MainMoon/Private/MainMoon';
  */
 export class TinyPlanetSystem extends SceneWrapper {
 
+  private static DEFAULT_SPEED = 500;
+  private static MIN_SPEED = 10;
+
   private readonly camera = new PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 10000);
   private readonly controls: FlyControls;
   private clock = new Clock();
@@ -44,7 +47,7 @@ export class TinyPlanetSystem extends SceneWrapper {
 
     const controls = this.controls = new FlyControls(this.camera, renderer.domElement);
     controls.domElement = renderer.domElement;
-    controls.movementSpeed = 500;
+    controls.movementSpeed = TinyPlanetSystem.DEFAULT_SPEED;
     controls.rollSpeed = 0.5;
     controls.autoForward = false;
     controls.dragToLook = true;
@@ -86,7 +89,20 @@ export class TinyPlanetSystem extends SceneWrapper {
   public update() {
     const delta = this.clock.getDelta();
 
-    // this.controls.movementSpeed = 0.33 * d;
+    let movementSpeed = TinyPlanetSystem.DEFAULT_SPEED;
+
+    let minDistance = Number.MAX_SAFE_INTEGER;
+    let planetIndex = 0;
+    for (let index = this.planets.length; --index >= 0;) {
+      const planet = this.planets[index];
+      const distance = planet.position.distanceToSquared(this.camera.position) - planet.radius ** 2;
+      if (distance < minDistance) {
+        minDistance = Math.max(0, distance);
+        planetIndex = index;
+      }
+    }
+
+    this.controls.movementSpeed = Math.max(TinyPlanetSystem.MIN_SPEED, Math.min(movementSpeed, Math.sqrt(minDistance / 5)));
     this.controls.update(delta);
 
     for (const planet of this.planets) {
