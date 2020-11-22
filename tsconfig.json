@@ -12,6 +12,21 @@
     "module": "ESNext",
     "noImplicitAny": true,
     "strict": true,
-    "baseUrl": "Source"
+    "baseUrl": "Source",
+    "rootDir": "./Source/",
+    "paths": {
+      "@Application": [
+        "./Application/*"
+      ],
+      "@Engine/*": [
+        "./Engine/*"
+      ],
+      "@Content/*": [
+        "./Content/*"
+      ],
+      "@Root/*": [
+        "./*"
+      ]
+    }
   }
 }

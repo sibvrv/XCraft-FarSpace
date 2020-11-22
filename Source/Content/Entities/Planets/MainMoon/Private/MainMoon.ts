@@ -3,11 +3,11 @@ import {PlanetContainer} from '@Engine/Helpers/PlanetContainer';
 import {IPlanetOptions} from '@Engine/Interfaces/IPlanetOptions';
 
 /**
- * @class MainPlanet
+ * @class MainMoon
  */
-export class MainPlanet extends PlanetContainer {
+export class MainMoon extends PlanetContainer {
   /**
-   * Main Planet Constructor
+   * Main Moon Constructor
    * @param radius
    * @param options
    */

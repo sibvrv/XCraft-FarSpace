@@ -1,9 +1,19 @@
 import {Scene, WebGLRenderer} from 'three';
+import {IFeatures} from '@Root/AppFramework/Features/Interfaces/IFeatures';
 
 /**
  * Scene Wrapper
  */
 export abstract class SceneWrapper extends Scene {
+  /**
+   * Scene Wrapper Constructor
+   * @param renderer
+   * @param features
+   */
+  constructor(renderer: WebGLRenderer, public features: Partial<IFeatures>) {
+    super();
+  }
+
   /**
    * Update camera aspect ratio or other elements
    * @param width

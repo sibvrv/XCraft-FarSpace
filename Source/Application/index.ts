@@ -1,3 +1,9 @@
 import {Application} from './Public';
 
-new Application();
+const application = new Application();
+
+import('../Content/Scenes/TinyPlanetSystem/Public').then(({default: SceneObject}) => {
+  const {renderer, features} = application;
+  const scene = new SceneObject(renderer, features);
+  application.setScene(scene);
+});
