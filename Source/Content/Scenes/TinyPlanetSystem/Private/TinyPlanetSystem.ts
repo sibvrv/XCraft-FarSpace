@@ -3,7 +3,6 @@ import {
   Clock,
   Color,
   DirectionalLight,
-  GridHelper,
   HemisphereLight,
   OrthographicCamera,
   PerspectiveCamera,
@@ -16,6 +15,7 @@ import {SceneWrapper} from '@Engine/Helpers/SceneWrapper';
 import {FlyControls} from 'three/examples/jsm/controls/FlyControls';
 import {PlanetContainer} from '@Engine/Helpers/PlanetContainer';
 import {MainMoon} from '@Content/Entities/Planets/MainMoon/Private/MainMoon';
+import {Stars} from '@Content/Entities/Enviroment/Stars/Public';
 
 /**
  * Tiny Planet System
@@ -30,7 +30,7 @@ export class TinyPlanetSystem extends SceneWrapper {
   private static DEFAULT_SPEED = 500;
   private static MIN_SPEED = 10;
 
-  private readonly camera = new PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 10000);
+  private readonly camera = new PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 20000);
   private readonly controls: FlyControls;
   private clock = new Clock();
   private planets: PlanetContainer[] = [];
@@ -64,10 +64,12 @@ export class TinyPlanetSystem extends SceneWrapper {
 
     this.cameraMaxDistance = mainPlanet.radius * 2 * 10;
 
+    this.add(new Stars(8000));
+
     let planetOffset = 200;
     for (let i = 10; --i >= 0;) {
       const planetRadius = 10 + Math.random() * 10;
-      let planetRotation = (Math.random() * Math.PI * 2) * (Math.random() < 0.5 ? -1 : 1);
+      const planetRotation = (Math.random() * Math.PI * 2) * (Math.random() < 0.5 ? -1 : 1);
 
       planetOffset += Math.sqrt(planetOffset) + planetRadius * 2.0 + Math.random() * 100;
 
@@ -81,7 +83,6 @@ export class TinyPlanetSystem extends SceneWrapper {
         .position.set(Math.sin(planetRotation) * planetOffset, 0, Math.cos(planetRotation) * planetOffset);
     }
 
-    this.initHelpers();
     this.initLightSystem();
   }
 
@@ -106,7 +107,7 @@ export class TinyPlanetSystem extends SceneWrapper {
   public update() {
     const delta = this.clock.getDelta();
 
-    let movementSpeed = TinyPlanetSystem.DEFAULT_SPEED;
+    const movementSpeed = TinyPlanetSystem.DEFAULT_SPEED;
 
     let minDistance = Number.MAX_SAFE_INTEGER;
     let planetIndex = 0;
@@ -162,7 +163,7 @@ export class TinyPlanetSystem extends SceneWrapper {
    */
   public cameraCollisions() {
     for (const planet of this.planets) {
-      let distance = this.camera.position.distanceTo(planet.position);
+      const distance = this.camera.position.distanceTo(planet.position);
       if (distance < this.cameraRadius + planet.radius) {
         const planetPosition = planet.position.clone();
         this.camera.position
@@ -180,14 +181,6 @@ export class TinyPlanetSystem extends SceneWrapper {
    */
   public render(renderer: WebGLRenderer) {
     renderer.render(this, this.camera);
-  }
-
-  /**
-   * Initialize Scene Helpers
-   */
-  private initHelpers() {
-    const gridHelper = new GridHelper(320, 32);
-    this.add(gridHelper);
   }
 
   /**

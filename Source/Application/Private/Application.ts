@@ -23,7 +23,7 @@ export class Application {
    */
   constructor() {
     this.renderer.setSize(innerWidth, innerHeight);
-    this.renderer.setClearColor(0x282828);
+    this.renderer.setClearColor(0x080808);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFSoftShadowMap;
 
