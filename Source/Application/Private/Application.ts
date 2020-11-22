@@ -1,6 +1,7 @@
 import {PCFSoftShadowMap, Vector2, WebGLRenderer} from 'three';
 import {isMobileDevice} from '../../AppFramework/Features/Devices/isMobileDevice';
 import {IFeatures} from '../../AppFramework/Features/Interfaces/IFeatures';
+import {SceneWrapper} from '../../Engine/Helpers/SceneWrapper';
 
 /**
  * Application Template
@@ -10,7 +11,7 @@ export class Application {
   public features: Partial<IFeatures> = {};
   public frameSize = new Vector2(0, 0);
 
-//  private readonly scene = new Scene();
+  private scene: SceneWrapper = null!;
 
   private readonly renderer = new WebGLRenderer({
     antialias: true,
@@ -41,15 +42,19 @@ export class Application {
   }
 
   /**
-   * Update the resolution of the renderer
+   * Update the resolution of the renderer and update scene entities
    */
   private adjustCanvasSize() {
     const {width, height} = this.frameSize;
     if (width === innerWidth && height === innerHeight) {
       return;
     }
-    this.renderer.setSize(innerWidth, innerHeight);
+    this.frameSize.set(innerWidth, innerHeight);
 
+    this.renderer.setSize(innerWidth, innerHeight);
+    if (this.scene) {
+      this.scene.resize(innerWidth, innerHeight);
+    }
   }
 
   /**
@@ -58,7 +63,11 @@ export class Application {
   private render() {
     this.adjustCanvasSize();
 
-    // this.renderer.render(this.scene, this.camera);
+    if (this.scene) {
+      this.scene.update();
+      this.scene.render(this.renderer);
+    }
+
     requestAnimationFrame(() => this.render());
   }
 }
