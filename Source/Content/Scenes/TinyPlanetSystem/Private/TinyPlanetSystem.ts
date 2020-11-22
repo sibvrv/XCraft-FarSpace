@@ -34,6 +34,8 @@ export class TinyPlanetSystem extends SceneWrapper {
   private readonly controls: FlyControls;
   private clock = new Clock();
   private planets: PlanetContainer[] = [];
+  private cameraRadius = 5;
+  private cameraMaxDistance = 1;
 
   /**
    * TinyPlanetSystem Constructor
@@ -52,13 +54,15 @@ export class TinyPlanetSystem extends SceneWrapper {
     controls.autoForward = false;
     controls.dragToLook = true;
 
-    this.addPlanet(new MainPlanet(
+    const mainPlanet = this.addPlanet(new MainPlanet(
       100,
       {
         color: new Color(0x00ff00),
       },
       ),
     );
+
+    this.cameraMaxDistance = mainPlanet.radius * 2 * 10;
 
     let planetOffset = 200;
     for (let i = 10; --i >= 0;) {
@@ -127,8 +131,53 @@ export class TinyPlanetSystem extends SceneWrapper {
       planet.position.set(Math.sin(rotationDelta) * offset, 0, Math.cos(rotationDelta) * offset);
       planet.rotateY(0.03 * delta);
     }
+
+    this.cameraDistanceLimit();
+    this.cameraCollisions();
   }
 
+  /**
+   * Camera
+   * - distance limit
+   */
+  public cameraDistanceLimit() {
+    const planet = this.planets[0];
+
+    let distance = this.camera.position.distanceTo(planet.position);
+    distance -= planet.radius + this.cameraRadius;
+
+    if (distance > this.cameraMaxDistance) {
+      const planetPosition = planet.position.clone();
+      this.camera.position
+        .subVectors(this.camera.position, planet.position)
+        .normalize()
+        .multiplyScalar(this.cameraMaxDistance + planet.radius + this.cameraRadius)
+        .add(planetPosition);
+    }
+  }
+
+  /**
+   * Camera
+   * - simple collision detection and response
+   */
+  public cameraCollisions() {
+    for (const planet of this.planets) {
+      let distance = this.camera.position.distanceTo(planet.position);
+      if (distance < this.cameraRadius + planet.radius) {
+        const planetPosition = planet.position.clone();
+        this.camera.position
+          .subVectors(this.camera.position, planet.position)
+          .normalize()
+          .multiplyScalar(planet.radius + this.cameraRadius)
+          .add(planetPosition);
+      }
+    }
+  }
+
+  /**
+   * Render Scene
+   * @param renderer
+   */
   public render(renderer: WebGLRenderer) {
     renderer.render(this, this.camera);
   }
