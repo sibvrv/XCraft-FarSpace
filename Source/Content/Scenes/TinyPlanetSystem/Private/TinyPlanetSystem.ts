@@ -60,8 +60,21 @@ export class TinyPlanetSystem extends SceneWrapper {
       ),
     );
 
+    let planetOffset = 200;
     for (let i = 10; --i >= 0;) {
-      this.addPlanet(new MainMoon(10 + Math.random() * 10, {color: new Color(0x555555)})).position.set(350 + i * (30 + Math.random() * 20), 0, 0);
+      const planetRadius = 10 + Math.random() * 10;
+      let planetRotation = (Math.random() * Math.PI * 2) * (Math.random() < 0.5 ? -1 : 1);
+
+      planetOffset += Math.sqrt(planetOffset) + planetRadius * 2.0 + Math.random() * 100;
+
+      this.addPlanet(new MainMoon(planetRadius, {
+        color: new Color(0x555555),
+        offset: planetOffset,
+        rotation: planetRotation,
+        rotationSpeed: Math.random() / 50000,
+        rotationY: 0.5 + Math.random() * 3,
+      }))
+        .position.set(Math.sin(planetRotation) * planetOffset, 0, Math.cos(planetRotation) * planetOffset);
     }
 
     this.initHelpers();
@@ -105,7 +118,13 @@ export class TinyPlanetSystem extends SceneWrapper {
     this.controls.movementSpeed = Math.max(TinyPlanetSystem.MIN_SPEED, Math.min(movementSpeed, Math.sqrt(minDistance / 5)));
     this.controls.update(delta);
 
+    const currentTime = this.clock.oldTime - this.clock.startTime;
+
     for (const planet of this.planets) {
+      const {rotation = 0, offset = 0, rotationSpeed = 1} = planet.options;
+      const rotationDelta = rotation + Math.sign(rotation) * rotationSpeed * currentTime;
+
+      planet.position.set(Math.sin(rotationDelta) * offset, 0, Math.cos(rotationDelta) * offset);
       planet.rotateY(0.03 * delta);
     }
   }
