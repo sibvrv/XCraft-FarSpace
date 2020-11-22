@@ -3,6 +3,7 @@ const path = require('path');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -12,7 +13,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    chunkFilename: '[hash]/[name].js'
+    chunkFilename: '[hash]/[name].js',
+    publicPath: '/'
   },
 
   resolve: {
@@ -58,10 +60,13 @@ module.exports = {
   },
 
   plugins: [
+    new CopyWebpackPlugin({
+      patterns: [{from: 'Images', to: 'Images'}]
+    }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       chunks: ['app'],
       template: path.resolve(__dirname, './Source/Assets/index.html')
-    })
+    }),
   ]
 };

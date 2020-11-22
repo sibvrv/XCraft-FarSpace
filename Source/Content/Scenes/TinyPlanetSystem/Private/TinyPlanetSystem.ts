@@ -4,8 +4,10 @@ import {
   Color,
   DirectionalLight,
   HemisphereLight,
+  MeshPhongMaterial,
   OrthographicCamera,
   PerspectiveCamera,
+  TextureLoader,
   Vector3,
   WebGLRenderer,
 } from 'three';
@@ -82,6 +84,16 @@ export class TinyPlanetSystem extends SceneWrapper {
       }))
         .position.set(Math.sin(planetRotation) * planetOffset, 0, Math.cos(planetRotation) * planetOffset);
     }
+
+    const loader = new TextureLoader();
+    loader.load('/Images/2k_mercury.jpg', (texture) => {
+      for (const planet of this.planets) {
+        if (!Array.isArray(planet.material)) {
+          (planet.material as MeshPhongMaterial).map = texture;
+          (planet.material as MeshPhongMaterial).needsUpdate = true;
+        }
+      }
+    });
 
     this.initLightSystem();
   }
